@@ -14,3 +14,7 @@ rocket_contrib = { version="*", features=["json"] }
 
 redis = "*"
 uuid = { version = "*", features=["serde", "v4"] }
+
+[dev-dependencies]
+
+reqwest = "*"
