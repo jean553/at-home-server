@@ -1,5 +1,7 @@
 # at-home-server
 
+The server part of [AtHome](https://github.com/jean553/at-home).
+
 Contains the source code of the at-home server and its container provision files.
 
 ## Use the development container
