@@ -48,7 +48,7 @@ curl http://localhost:8000/api/ping
 
 ## Upload the image on the ECR
 
-You must be logged in AWS CLI with the `at-home-eks-user` created [here](https://gitlab.com/jean553/at-home-infrastructure#create-the-athome-eks-iam-role).
+You must be logged in AWS CLI with the `at-home-eks-user` created [here](https://github.com/jean553/at-home-infrastructure#create-the-athome-eks-iam-user).
 
 Docker login on the ECR:
 
