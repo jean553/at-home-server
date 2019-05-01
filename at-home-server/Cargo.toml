@@ -1,0 +1,16 @@
+[package]
+name = "at-home-server"
+version = "0.1.0"
+authors = ["Jean LELIEVRE <Jean.LELIEVRE@supinfo.com>"]
+
+[dependencies]
+
+serde = "*"
+serde_json = "*"
+serde_derive = "*"
+
+rocket = "*"
+rocket_contrib = { version="*", features=["json"] }
+
+redis = "*"
+uuid = { version = "*", features=["serde", "v4"] }

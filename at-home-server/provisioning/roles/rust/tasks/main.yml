@@ -1,0 +1,16 @@
+---
+
+  - name: download rustup
+    get_url:
+      url: "{{ rustup_url }}"
+      dest: "{{ temp_directory_path }}/{{ rustup_archive_name }}"
+
+  - name: install rustup and rust nightly
+    shell: "sh {{ rustup_archive_name }} --default-toolchain nightly -y"
+    args:
+      chdir: "{{ temp_directory_path }}"
+
+  - name: project compiled
+    shell: /root/.cargo/bin/cargo build --release
+    args:
+      chdir: /var/opt/at-home-server 

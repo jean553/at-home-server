@@ -1,0 +1,6 @@
+---
+
+temp_directory_path: "/tmp"
+
+rustup_archive_name: "rustup.sh"
+rustup_url: "https://sh.rustup.rs"
