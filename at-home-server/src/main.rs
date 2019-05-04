@@ -1,3 +1,5 @@
+//! The AtHome micro-service server.
+
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use] extern crate rocket;
@@ -76,6 +78,8 @@ fn create_ride(
 ///
 /// `redis_client` - the Redis client to use for database connection
 /// `ride_id` - the id of the ride to check
+/// `latitude` - the latitude sent through query params
+/// `longitude` - the longitude sent through query params
 #[get("/rides/<ride_id>/is-arrived?<latitude>&<longitude>")]
 fn check_is_arrived(
     redis_client: State<redis::Client>,
