@@ -9,6 +9,10 @@ extern crate rocket_contrib;
 extern crate uuid;
 extern crate redis;
 
+mod ride;
+
+use ride::Ride;
+
 use rocket_contrib::json::Json;
 use uuid::Uuid;
 use rocket::{
@@ -18,13 +22,6 @@ use rocket::{
 use rocket::http::Status;
 use redis::Commands;
 use serde_json::json;
-
-#[derive(Deserialize)]
-struct Ride {
-    phone_number: String,
-    latitude: f32,
-    longitude: f32,
-}
 
 /// Ping API for healthchecks.
 #[get("/ping")]
