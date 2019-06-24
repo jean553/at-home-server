@@ -153,3 +153,31 @@ fn test_check_is_arrived_when_not_arrived() {
     let arrived: CheckedRide = response.json().unwrap();
     assert_eq!(arrived.arrived, "false");
 }
+
+#[test]
+fn test_check_is_arrived_when_arrived() {
+
+    let mut json: HashMap<&str, JsonValue> = HashMap::new();
+    json.insert("phone_number", JsonValue::PhoneNumber("0102030405"));
+    json.insert("latitude", JsonValue::GPSCoordinate(48.8239103));
+    json.insert("longitude", JsonValue::GPSCoordinate(2.3550088));
+
+    let client = reqwest::Client::new();
+    let response = client.post_ride(&json);
+
+    let ride_id = response.headers()
+        .get(reqwest::header::LOCATION)
+        .unwrap()
+        .to_str()
+        .unwrap();
+
+    let mut response = client.get_check_is_arrived(
+        ride_id.to_string(),
+        "48.8240445".to_string(),
+        "2.3552422".to_string()
+    );
+    assert_eq!(response.status(), 200);
+
+    let arrived: CheckedRide = response.json().unwrap();
+    assert_eq!(arrived.arrived, "true");
+}

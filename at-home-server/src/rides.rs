@@ -95,7 +95,8 @@ pub fn check_is_arrived(
         (longitude - destination_longitude).powi(2)
     ).sqrt();
 
-    if distance < 0.0003 {
+    const DISTANCE_MARGIN: f32 = 0.0003;
+    if distance < DISTANCE_MARGIN {
         return Json(json!({"arrived": "true"}));
     }
 
