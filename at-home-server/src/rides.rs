@@ -74,7 +74,10 @@ pub fn check_is_arrived(
 
     /* TODO: returns 404 if the ride cannot be found */
 
-    let (latitude, longitude) : (String, String) = redis_connection.hget(
+    let (
+        destination_latitude,
+        destination_longitude
+    ) : (String, String) = redis_connection.hget(
         &ride_id,
         &[
             "latitude",
@@ -82,9 +85,21 @@ pub fn check_is_arrived(
         ]
     ).unwrap();
 
-    /* TODO: determine if the points are closed to each other */
+    let latitude: f32 = latitude.parse().unwrap();
+    let longitude: f32 = longitude.parse().unwrap();
+    let destination_latitude: f32 = destination_latitude.parse().unwrap();
+    let destination_longitude: f32 = destination_longitude.parse().unwrap();
 
-    Json(json!({"arrived": "true"}))
+    let distance = (
+        (latitude - destination_latitude).powi(2) +
+        (longitude - destination_longitude).powi(2)
+    ).sqrt();
+
+    if distance < 0.0003 {
+        return Json(json!({"arrived": "true"}));
+    }
+
+    Json(json!({"arrived": "false"}))
 }
 
 /// Deletes a ride and sends the text message.

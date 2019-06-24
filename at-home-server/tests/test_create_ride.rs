@@ -8,10 +8,16 @@ use reqwest::{
 
 use serde::{
     Serialize,
+    Deserialize,
     Serializer,
 };
 
 use std::collections::HashMap;
+
+#[derive(Deserialize)]
+struct CheckedRide {
+    arrived: String,
+}
 
 /// We use a HashMap to declare the data we send to the service;
 /// this data is then serialized in order to be sent as JSON;
@@ -63,6 +69,13 @@ trait HandleRides {
         &self,
         json: &HashMap<&str, JsonValue>,
     ) -> Response;
+
+    fn get_check_is_arrived(
+        &self,
+        ride_location: String,
+        latitude: String,
+        longitude: String,
+    ) -> Response;
 }
 
 impl HandleRides for Client {
@@ -76,6 +89,26 @@ impl HandleRides for Client {
             .json(&json)
             .send()
             .unwrap()
+    }
+
+    fn get_check_is_arrived(
+        &self,
+        ride_location: String,
+        latitude: String,
+        longitude: String,
+    ) -> Response {
+
+        self.get(
+            &format!(
+                "{}/api{}/is-arrived?latitude={}&longitude={}",
+                self.get_base_url(),
+                ride_location,
+                latitude,
+                longitude
+            )
+        )
+        .send()
+        .unwrap()
     }
 }
 
@@ -91,4 +124,32 @@ fn test_create_ride_returns_201() {
     let response = client.post_ride(&json);
 
     assert_eq!(response.status(), 201);
+}
+
+#[test]
+fn test_check_is_arrived_when_not_arrived() {
+
+    let mut json: HashMap<&str, JsonValue> = HashMap::new();
+    json.insert("phone_number", JsonValue::PhoneNumber("0102030405"));
+    json.insert("latitude", JsonValue::GPSCoordinate(48.8239103));
+    json.insert("longitude", JsonValue::GPSCoordinate(2.3550088));
+
+    let client = reqwest::Client::new();
+    let response = client.post_ride(&json);
+
+    let ride_id = response.headers()
+        .get(reqwest::header::LOCATION)
+        .unwrap()
+        .to_str()
+        .unwrap();
+
+    let mut response = client.get_check_is_arrived(
+        ride_id.to_string(),
+        "48.8241469".to_string(),
+        "2.3552269".to_string()
+    );
+    assert_eq!(response.status(), 200);
+
+    let arrived: CheckedRide = response.json().unwrap();
+    assert_eq!(arrived.arrived, "false");
 }
