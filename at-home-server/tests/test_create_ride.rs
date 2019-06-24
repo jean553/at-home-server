@@ -1,9 +1,5 @@
-extern crate interface_tests_helpers;
-
 extern crate reqwest;
 extern crate serde;
-
-use interface_tests_helpers::{ResponseHandler, HasBaseUrl};
 
 use reqwest::{
     Client,
@@ -48,10 +44,6 @@ impl<'a> Serialize for JsonValue<'a> {
         }
     }
 }
-
-/// FIXME: not sure if I have to declare again the trait,
-/// only because HasBaseUrl is foreign and Client is also foreign,
-/// so it throws the error E0117...
 
 trait HasBaseUrl {
 
