@@ -1,0 +1,6 @@
+language: rust
+rust:
+    - nightly-2019-04-27
+script:
+    - cd at-home-server/
+    - cargo build --release 
