@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jean553/at-home-server.svg?branch=master)](https://travis-ci.org/jean553/at-home-server)
+
 # at-home-server
 
 The server part of [AtHome](https://github.com/jean553/at-home).
