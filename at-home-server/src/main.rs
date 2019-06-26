@@ -12,6 +12,8 @@ extern crate redis;
 mod ride;
 mod rides;
 
+use std::env;
+
 /// Ping API for healthchecks.
 #[get("/ping")]
 fn get_ping() -> &'static str {
@@ -20,8 +22,8 @@ fn get_ping() -> &'static str {
 
 fn main() {
 
-    const REDIS_URL: &str = "redis://at-home-server_db/";
-    let redis_client = redis::Client::open(REDIS_URL).unwrap();
+    let redis_url: &str = &env::var("REDIS_URL").expect("Missing REDIS_URL");
+    let redis_client = redis::Client::open(redis_url).unwrap();
 
     rocket::ignite()
         .manage(redis_client)

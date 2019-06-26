@@ -5,7 +5,8 @@ PROJECT = "at-home-server"
 
 DOCKER_ENV = {
   "HOST_USER_UID" => Process.euid,
-  "APP_PATH" => "/vagrant/at-home-server"
+  "APP_PATH" => "/vagrant/at-home-server",
+  "REDIS_URL" => "redis://at-home-server_db/"
 }
 
 ENV['VAGRANT_NO_PARALLEL'] = 'yes'
