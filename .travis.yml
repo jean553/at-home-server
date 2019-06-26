@@ -1,6 +1,13 @@
 language: rust
+env:
+    global:
+        - REDIS_URL=redis://localhost/
 rust:
     - nightly-2019-04-27
+services:
+    - redis-server
 script:
     - cd at-home-server/
     - cargo build --release 
+    - ./target/release/at-home-server &
+    - cargo test
