@@ -126,12 +126,21 @@ pub fn remove_ride(
         .get_connection()
         .unwrap();
 
-    let _: () = redis_connection.del(&ride_id).unwrap();
+    let phone_number: String = redis_connection.hget(
+        &ride_id,
+        &["phone_number"]
+    ).unwrap();
 
-    /* FIXME: use the ride phone number here */
+    /* FIXME: we only consider numbers located in France for now;
+       the specification of this need/feature should be clarified
+       for future developments, the final expected format is +33XYYZZAABB */
+    let final_phone_number = "+33".to_string() + &phone_number
+        .replace(" ", "")
+        .split_off(1);
+
     let message = PublishInput {
         message: "Your friend is at home!".to_string(),
-        phone_number: Some("".to_string()),
+        phone_number: Some(final_phone_number),
         message_attributes: None,
         message_structure: None,
         subject: Some("AtHome".to_string()),
@@ -139,6 +148,8 @@ pub fn remove_ride(
         target_arn: None,
     };
     state.sns_client.publish(message).sync().unwrap();
+
+    let _: () = redis_connection.del(&ride_id).unwrap();
 
     Response::build()
         .status(Status::Ok)
