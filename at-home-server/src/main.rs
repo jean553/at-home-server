@@ -13,8 +13,6 @@ extern crate rusoto_core;
 extern crate rusoto_credential;
 extern crate rusoto_sns;
 
-extern crate env_logger;
-
 mod ride;
 mod rides;
 
