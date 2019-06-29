@@ -128,6 +128,7 @@ pub fn remove_ride(
 
     let _: () = redis_connection.del(&ride_id).unwrap();
 
+    /* FIXME: use the ride phone number here */
     let message = PublishInput {
         message: "Your friend is at home!".to_string(),
         phone_number: Some("".to_string()),
