@@ -26,7 +26,7 @@ Create a AWS IAM user with the following policy:
  * `AmazonSNSFullAccess`
 (note that this policy is too much opened for the needs of the service, consider reducing the privileges or using a custom policy instead)
 
-Into the Vagrantfile, set correctly the following values:
+Set the two following environment variable on your host:
  * `AWS_ACCESS_KEY_ID`
  * `AWS_SECRET_ACCESS_KEY`
 
