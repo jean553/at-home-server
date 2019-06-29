@@ -6,7 +6,10 @@ PROJECT = "at-home-server"
 DOCKER_ENV = {
   "HOST_USER_UID" => Process.euid,
   "APP_PATH" => "/vagrant/at-home-server",
-  "REDIS_URL" => "redis://at-home-server_db/"
+  "REDIS_URL" => "redis://at-home-server_db/",
+
+  "AWS_ACCESS_KEY_ID" => "",
+  "AWS_SECRET_ACCESS_KEY" => ""
 }
 
 ENV['VAGRANT_NO_PARALLEL'] = 'yes'

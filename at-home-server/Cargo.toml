@@ -5,6 +5,8 @@ authors = ["Jean LELIEVRE <Jean.LELIEVRE@supinfo.com>"]
 
 [dependencies]
 
+futures = "*"
+
 serde = "*"
 serde_json = "*"
 serde_derive = "*"
@@ -14,6 +16,10 @@ rocket_contrib = { version="*", features=["json"] }
 
 redis = "*"
 uuid = { version = "*", features=["serde", "v4"] }
+
+rusoto_core = "*"
+rusoto_credential = "*"
+rusoto_sns = "*"
 
 [dev-dependencies]
 
