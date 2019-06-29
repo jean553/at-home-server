@@ -14,17 +14,16 @@ extern crate rusoto_credential;
 extern crate rusoto_sns;
 
 mod ride;
+mod context;
 mod rides;
+
+use context::Context;
 
 use rusoto_core::{
     Region,
     HttpClient,
 };
-use rusoto_sns::{
-    Sns,
-    SnsClient,
-    PublishInput,
-};
+use rusoto_sns::SnsClient;
 use rusoto_credential::EnvironmentProvider;
 
 use std::env;
@@ -38,31 +37,18 @@ fn get_ping() -> &'static str {
 fn main() {
 
     let redis_url: &str = &env::var("REDIS_URL").expect("Missing REDIS_URL");
-    let redis_client = redis::Client::open(redis_url).unwrap();
 
-    let credentials = EnvironmentProvider::default();
-
-    let sns_client = SnsClient::new_with(
-        HttpClient::new().unwrap(),
-        credentials,
-        Region::EuWest1
-    );
-
-    /* FIXME: sending a text message is handled here for now for tests purposes,
-       it should be sent when an user is arrived at his final destination */
-    let message = PublishInput {
-        message: "Your friend is at home!".to_string(),
-        phone_number: Some("".to_string()),
-        message_attributes: None,
-        message_structure: None,
-        subject: Some("AtHome".to_string()),
-        topic_arn: None,
-        target_arn: None,
+    let context = Context {
+        redis_client: redis::Client::open(redis_url).unwrap(),
+        sns_client: SnsClient::new_with(
+            HttpClient::new().unwrap(),
+            EnvironmentProvider::default(),
+            Region::EuWest1
+        )
     };
-    sns_client.publish(message).sync().unwrap();
 
     rocket::ignite()
-        .manage(redis_client)
+        .manage(context)
         .mount(
             "/api",
             routes![

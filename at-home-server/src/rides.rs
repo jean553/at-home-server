@@ -1,6 +1,7 @@
 //! Handles all the rides API actions.
 
 use ride::Ride;
+use context::Context;
 
 use rocket_contrib::json::Json;
 use uuid::Uuid;
@@ -11,6 +12,10 @@ use rocket::{
 use rocket::http::Status;
 use redis::Commands;
 use serde_json::json;
+use rusoto_sns::{
+    Sns,
+    PublishInput,
+};
 
 
 /// Creates a ride.
@@ -25,12 +30,13 @@ use serde_json::json;
     data="<ride>"
 )]
 pub fn create_ride(
-    redis_client: State<redis::Client>,
+    state: State<Context>,
     ride: Json<Ride>,
 ) -> Response {
 
-    let redis_client = redis_client.inner();
-    let redis_connection = redis_client.get_connection().unwrap();
+    let redis_connection = state.redis_client
+        .get_connection()
+        .unwrap();
 
     let id = Uuid::new_v4()
         .to_hyphenated()
@@ -63,14 +69,15 @@ pub fn create_ride(
 /// `longitude` - the longitude sent through query params
 #[get("/rides/<ride_id>/is-arrived?<latitude>&<longitude>")]
 pub fn check_is_arrived(
-    redis_client: State<redis::Client>,
+    state: State<Context>,
     ride_id: String,
     latitude: String,
     longitude: String
 ) -> Json<serde_json::Value> {
 
-    let redis_client = redis_client.inner();
-    let redis_connection = redis_client.get_connection().unwrap();
+    let redis_connection = state.redis_client
+        .get_connection()
+        .unwrap();
 
     /* TODO: returns 404 if the ride cannot be found */
 
@@ -111,19 +118,28 @@ pub fn check_is_arrived(
 /// `ride_id` - the id of the ride to check
 #[delete("/rides/<ride_id>")]
 pub fn remove_ride(
-    redis_client: State<redis::Client>,
+    state: State<Context>,
     ride_id: String
 ) -> Response {
 
-    let redis_client = redis_client.inner();
-    let redis_connection = redis_client.get_connection().unwrap();
+    let redis_connection = state.redis_client
+        .get_connection()
+        .unwrap();
 
     let _: () = redis_connection.del(&ride_id).unwrap();
 
-    /* TODO: send a SMS using Roboto */
+    let message = PublishInput {
+        message: "Your friend is at home!".to_string(),
+        phone_number: Some("".to_string()),
+        message_attributes: None,
+        message_structure: None,
+        subject: Some("AtHome".to_string()),
+        topic_arn: None,
+        target_arn: None,
+    };
+    state.sns_client.publish(message).sync().unwrap();
 
     Response::build()
         .status(Status::Ok)
         .finalize()
 }
-
