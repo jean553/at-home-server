@@ -11,6 +11,7 @@ RUN apt-get install -y \
     python-pip  \
     libffi-dev \
     libssl-dev \
+    pkg-config \
     sudo && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
