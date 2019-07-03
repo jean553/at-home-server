@@ -13,6 +13,7 @@ extern crate rusoto_core;
 extern crate rusoto_credential;
 extern crate rusoto_sns;
 
+mod ping;
 mod ride;
 mod context;
 mod rides;
@@ -27,12 +28,6 @@ use rusoto_sns::SnsClient;
 use rusoto_credential::EnvironmentProvider;
 
 use std::env;
-
-/// Ping API for healthchecks.
-#[get("/ping")]
-fn get_ping() -> &'static str {
-    "OK"
-}
 
 fn main() {
 
@@ -52,7 +47,7 @@ fn main() {
         .mount(
             "/api",
             routes![
-                get_ping,
+                ping::get_ping,
                 rides::create_ride,
                 rides::check_is_arrived,
                 rides::remove_ride
